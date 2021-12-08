@@ -1,0 +1,43 @@
+spring:
+   datasource:
+      url: jdbc:h2:mem:airfrance
+      username: airfrance
+      password: airfrance
+      driverClassName: org.h2.Driver
+   jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
+      show-sql: false
+      open-in-view: false
+      hibernate:
+         ddl-auto: create-drop
+   h2:
+      console:
+         enabled: true
+         settings:
+            web-allow-others: false
+   liquibase:
+      enabled: true
+      change-log: classpath:db/changelog/db.changelog-master.yaml
+   sql:
+      init:
+         encoding: UTF-8
+logging:
+  level:
+    root: INFO
+    org:
+      springframework:
+        web:
+          filter:
+            CommonsRequestLoggingFilter: DEBUG
+    com:
+      airfrance:
+        api: DEBUG
+server:
+  error:
+    include-message: always
+airfrance:
+  api:
+    user:
+      get: "/user/{username}"
+      create: "/user"
+      delete: "/user/{username}"
