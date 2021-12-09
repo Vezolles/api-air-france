@@ -13,10 +13,10 @@ import com.airfrance.api.user.dto.UserDTO;
 @Validated
 public interface UserController {
 	
-	@ResponseBody UserDTO getUser(@PathVariable @Size(max = 100, message = "{user.username.size}") String username);
+	@ResponseBody UserDTO getUser(@PathVariable @Valid @Size(max = 100, message = "{user.username.size}") String username);
     
 	@ResponseBody UserDTO createUser(@RequestBody @Valid UserDTO user);
     
-    void deleteUser(@PathVariable @Size(max = 100, message = "{user.username.size}") String username);
+    void deleteUser(@PathVariable @Valid @Size(max = 100, message = "{user.username.size}") String username);
 
 }

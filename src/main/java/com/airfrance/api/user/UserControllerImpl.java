@@ -27,7 +27,6 @@ public class UserControllerImpl implements UserController {
 	public UserDTO getUser(String username) {
 		
 		User userFound = userService.getUser(username);
-		
 		return modelMapper.map(userFound, UserDTO.class);
 	}
 
@@ -38,7 +37,6 @@ public class UserControllerImpl implements UserController {
 		
 		User userReceived = modelMapper.map(user, User.class);
 		User userCreated = userService.createUser(userReceived);
-
 		return modelMapper.map(userCreated, UserDTO.class);
 	}
 
