@@ -18,6 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.airfrance.api.user.dto.UserDTO;
 import com.airfrance.api.user.model.User;
 
+/**
+ * Unit tests for UserController
+ * @author Vezolles
+ */
 @SpringBootTest
 class UserControllerTest {
 	

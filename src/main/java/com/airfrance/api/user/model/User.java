@@ -16,6 +16,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity User for persistence
+ * @author Vezolles
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -24,6 +28,10 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 2934035488529223181L;
 
+	/**
+	 * Attribute id with getter and setter
+	 * Auto-increment value
+	 */
 	@Getter
 	@Setter
 	@Id
@@ -31,32 +39,51 @@ public class User implements Serializable {
 	@Column
 	private Long id;
 	
+	/**
+	 * Attribute username with getter and setter
+	 */
 	@Getter
 	@Setter
 	@Column
 	private String username;
 	
+	/**
+	 * Attribute birthdate with getter and setter
+	 * Format timestamp
+	 */
 	@Getter
 	@Setter
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column
 	private Date birthdate;
 	
+	/**
+	 * Attribute country with getter and setter
+	 */
 	@Getter
 	@Setter
 	@Column
 	private String country;
 	
+	/**
+	 * Attribute phone with getter and setter
+	 */
 	@Getter
 	@Setter
 	@Column
 	private String phone;
 	
+	/**
+	 * Attribute gender with getter and setter
+	 */
 	@Getter
 	@Setter
 	@Column
 	private String gender;
 	
+	/**
+	 * Attribute email with getter and setter
+	 */
 	@Getter
 	@Setter
 	@Column

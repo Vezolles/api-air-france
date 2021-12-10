@@ -9,6 +9,10 @@ import java.util.Date;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * Unit tests for UserDTO
+ * @author Vezolles
+ */
 @SpringBootTest
 class UserDTOTest {
 	

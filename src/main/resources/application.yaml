@@ -35,6 +35,12 @@ logging:
 server:
   error:
     include-message: always
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
 airfrance:
   api:
     user:

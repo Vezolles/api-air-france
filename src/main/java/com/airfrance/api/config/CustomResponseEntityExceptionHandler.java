@@ -15,9 +15,22 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * Configuration spring boot for custom response exception
+ * @author Vezolles
+ */
 @ControllerAdvice
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	/**
+	 * Customize the response for MethodArgumentNotValidException.
+	 * <p>This method delegates to {@link #handleExceptionInternal}.
+	 * @param ex the exception
+	 * @param headers the headers to be written to the response
+	 * @param status the selected response status
+	 * @param request the current request
+	 * @return a {@code ResponseEntity} instance
+	 */
 	@Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
@@ -31,7 +44,8 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
-
+        
+        // Adding error messages
         body.put("messages", messages);
         body.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
 

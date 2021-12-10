@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+/**
+ * Unit tests for UserCreateException
+ * @author Vezolles
+ */
 @SpringBootTest
 class UserCreateExceptionTest {
 	

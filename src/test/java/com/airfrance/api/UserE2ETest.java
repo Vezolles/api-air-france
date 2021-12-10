@@ -27,6 +27,10 @@ import com.airfrance.api.user.dto.UserDTO;
 import com.airfrance.api.user.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Tests E2E for user
+ * @author Vezolles
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserE2ETest {
@@ -42,6 +46,9 @@ class UserE2ETest {
 	
 	private Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 	
+	/**
+	 * Before each test, add user
+	 */
 	@BeforeEach
 	void setUp() {
 		User user = new User();
@@ -54,6 +61,9 @@ class UserE2ETest {
 		userRepository.save(user);
 	}
 	
+	/**
+	 * After each test, remove user
+	 */
 	@AfterEach
 	void tearDown() {
 		Optional<User> user = userRepository.findByUsername("test");
@@ -62,6 +72,10 @@ class UserE2ETest {
 		}
 	}
 
+	/**
+	 * Test get user's details
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testGetUser() throws Exception {
 
@@ -80,6 +94,10 @@ class UserE2ETest {
     	assertEquals("test@test.com", userDTOReceived.getEmail());
     }
     
+    /**
+	 * Test fail if user is blank
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testGetUserBlank() throws Exception {
 
@@ -87,6 +105,10 @@ class UserE2ETest {
         	.andExpect(status().isMethodNotAllowed());
     }
     
+    /**
+	 * Test fail if user not exists
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testGetUserNotExist() throws Exception {
 
@@ -94,6 +116,10 @@ class UserE2ETest {
         	.andExpect(status().isInternalServerError());
     }
     
+    /**
+	 * Test creation new user
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUser() throws Exception {
     	
@@ -116,6 +142,10 @@ class UserE2ETest {
     	assertEquals("test@test.com", userDTOReceived.getEmail());
     }
     
+    /**
+	 * Test fail if creation user blank
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserBlank() throws Exception {
     	
@@ -124,6 +154,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user already exist
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserExist() throws Exception {
     	
@@ -135,6 +169,10 @@ class UserE2ETest {
     		.andExpect(status().isInternalServerError());
     }
     
+    /**
+	 * Test fail if creation user not adult
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserNotAdult() throws Exception {
     	
@@ -147,6 +185,10 @@ class UserE2ETest {
     		.andExpect(status().isInternalServerError());
     }
     
+    /**
+	 * Test fail if creation user not french
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserNotFrench() throws Exception {
     	
@@ -158,6 +200,10 @@ class UserE2ETest {
     		.andExpect(status().isInternalServerError());
     }
     
+    /**
+	 * Test fail if creation user with username missing
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserUsernameMissing() throws Exception {
     	
@@ -169,6 +215,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with username too long
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserUsernameTooLong() throws Exception {
     	
@@ -180,6 +230,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with birthdate missing
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserBirthdateMissing() throws Exception {
     	
@@ -191,6 +245,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with birthdate wrong format
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserBirthdateWrongFormat() throws Exception {
     	
@@ -202,6 +260,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with country missing
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserCountryMissing() throws Exception {
     	
@@ -213,6 +275,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with country too long
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserCountryTooLong() throws Exception {
     	
@@ -224,6 +290,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with phone too long
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserPhoneTooLong() throws Exception {
     	
@@ -235,6 +305,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with gender too long
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserGenderTooLong() throws Exception {
     	
@@ -246,6 +320,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with mail too long
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserMailTooLong() throws Exception {
     	
@@ -257,6 +335,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test fail if creation user with mail wrong format
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testCreateUserMailWrongFormat() throws Exception {
     	
@@ -268,6 +350,10 @@ class UserE2ETest {
     		.andExpect(status().isBadRequest());
     }
     
+    /**
+	 * Test delete user
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testDeleteUser() throws Exception {
 
@@ -275,6 +361,10 @@ class UserE2ETest {
         	.andExpect(status().isNoContent());
     }
     
+    /**
+	 * Test fail if deletion user blank
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testDeleteUserBlank() throws Exception {
 
@@ -282,6 +372,10 @@ class UserE2ETest {
         	.andExpect(status().isMethodNotAllowed());
     }
     
+    /**
+	 * Test fail if deletion user not exist
+	 * @throws Exception if error occurs
+	 */
     @Test
     void testDeleteUserNotExist() throws Exception {
 

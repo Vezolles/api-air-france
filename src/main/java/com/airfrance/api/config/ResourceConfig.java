@@ -8,9 +8,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+/**
+ * Configuration spring boot for resources
+ * @author Vezolles
+ */
 @Configuration
 public class ResourceConfig {
 	
+	/**
+	 * Bean declaration for message source
+	 * @return message source
+	 */
 	@Bean
 	public MessageSource getMessageSource() {
 		
@@ -22,6 +30,10 @@ public class ResourceConfig {
         return messageRessource;
 	}
 	
+	/**
+	 * Bean declaration for validator
+	 * @return factory for validators with message source
+	 */
 	@Bean
 	public LocalValidatorFactoryBean getValidator() {
 		

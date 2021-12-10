@@ -23,6 +23,10 @@ import com.airfrance.api.user.exception.UserDeleteException;
 import com.airfrance.api.user.exception.UserNotFoundException;
 import com.airfrance.api.user.model.User;
 
+/**
+ * Unit tests for UserService
+ * @author Vezolles
+ */
 @SpringBootTest
 class UserServiceTest {
 	
