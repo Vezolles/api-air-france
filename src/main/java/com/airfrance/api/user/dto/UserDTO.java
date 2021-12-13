@@ -1,6 +1,6 @@
 package com.airfrance.api.user.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -40,7 +40,7 @@ public class UserDTO {
 	@Setter
 	@NotNull(message = "{user.birthday.mandatory}")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
-	private Date birthdate;
+	private LocalDate birthdate;
 	
 	/**
 	 * Attribute country with getter and setter

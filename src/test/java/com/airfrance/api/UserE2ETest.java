@@ -2,11 +2,13 @@ package com.airfrance.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc
 class UserE2ETest {
 	
+	@Mock
+	private Clock clock;
+	
 	@Autowired
     private MockMvc mockMvc;
 	
@@ -44,13 +50,15 @@ class UserE2ETest {
 	@Autowired
 	private UserRepository userRepository;
 	
-	private Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+	private Date date = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+	private LocalDate dateDTO = LocalDate.of(2002, 1, 8);
 	
 	/**
 	 * Before each test, add user
 	 */
 	@BeforeEach
 	void setUp() {
+		
 		User user = new User();
 		user.setUsername("test");
 		user.setBirthdate(date);
@@ -59,6 +67,10 @@ class UserE2ETest {
 		user.setGender("man");
 		user.setEmail("test@test.com");
 		userRepository.save(user);
+		
+		Clock fixedClock = Clock.fixed(LocalDate.of(2020, 1, 8).atStartOfDay(ZoneOffset.UTC).toInstant(), ZoneOffset.UTC);
+	    doReturn(fixedClock.instant()).when(clock).instant();
+	    doReturn(fixedClock.getZone()).when(clock).getZone();
 	}
 	
 	/**
@@ -87,7 +99,7 @@ class UserE2ETest {
     	
     	assertNotNull(userDTOReceived);
     	assertEquals("test", userDTOReceived.getUsername());
-    	assertEquals(date, userDTOReceived.getBirthdate());
+    	assertEquals(dateDTO, userDTOReceived.getBirthdate());
     	assertEquals("France", userDTOReceived.getCountry());
     	assertEquals("0612345678", userDTOReceived.getPhone());
     	assertEquals("man", userDTOReceived.getGender());
@@ -113,7 +125,7 @@ class UserE2ETest {
     void testGetUserNotExist() throws Exception {
 
     	mockMvc.perform(get("/user/testnotexist"))
-        	.andExpect(status().isInternalServerError());
+        	.andExpect(status().isNotFound());
     }
     
     /**
@@ -123,7 +135,7 @@ class UserE2ETest {
     @Test
     void testCreateUser() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "France", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "France", "0612345678", "man", "test@test.com");
 
     	MvcResult result = mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -135,7 +147,7 @@ class UserE2ETest {
     	
     	assertNotNull(userDTOReceived);
     	assertEquals("testcreation", userDTOReceived.getUsername());
-    	assertEquals(date, userDTOReceived.getBirthdate());
+    	assertEquals(dateDTO, userDTOReceived.getBirthdate());
     	assertEquals("France", userDTOReceived.getCountry());
     	assertEquals("0612345678", userDTOReceived.getPhone());
     	assertEquals("man", userDTOReceived.getGender());
@@ -161,7 +173,7 @@ class UserE2ETest {
     @Test
     void testCreateUserExist() throws Exception {
     	
-    	UserDTO user = new UserDTO("test", date, "France", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("test", dateDTO, "France", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -176,7 +188,7 @@ class UserE2ETest {
     @Test
     void testCreateUserNotAdult() throws Exception {
     	
-    	Date dateNotAdult = Date.from(LocalDate.of(2020, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+    	LocalDate dateNotAdult = LocalDate.of(2002, 1, 9);
     	UserDTO user = new UserDTO("test", dateNotAdult, "France", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
@@ -192,7 +204,7 @@ class UserE2ETest {
     @Test
     void testCreateUserNotFrench() throws Exception {
     	
-    	UserDTO user = new UserDTO("test", date, "Spain", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("test", dateDTO, "Spain", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -207,7 +219,7 @@ class UserE2ETest {
     @Test
     void testCreateUserUsernameMissing() throws Exception {
     	
-    	UserDTO user = new UserDTO(null, date, "France", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO(null, dateDTO, "France", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -222,7 +234,7 @@ class UserE2ETest {
     @Test
     void testCreateUserUsernameTooLong() throws Exception {
     	
-    	UserDTO user = new UserDTO("testtoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", date, "France", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("testtoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", dateDTO, "France", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -252,7 +264,7 @@ class UserE2ETest {
     @Test
     void testCreateUserBirthdateWrongFormat() throws Exception {
     	
-    	String json = "{\"username\":\"testcreation\",\"birthdate\":\"1990-01\",\"country\":\"France\",\"phone\":\"0612345678\",\"gender\":\"man\",\"email\":\"test@test.com\"}";
+    	String json = "{\"username\":\"testcreation\",\"birthdate\":\"2002-01\",\"country\":\"France\",\"phone\":\"0612345678\",\"gender\":\"man\",\"email\":\"test@test.com\"}";
 
     	mockMvc.perform(post("/user")
 	    		.content(json)
@@ -267,7 +279,7 @@ class UserE2ETest {
     @Test
     void testCreateUserCountryMissing() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, null, "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, null, "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -282,7 +294,7 @@ class UserE2ETest {
     @Test
     void testCreateUserCountryTooLong() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "Francetoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "0612345678", "man", "test@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "Francetoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "0612345678", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -297,7 +309,7 @@ class UserE2ETest {
     @Test
     void testCreateUserPhoneTooLong() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "France", "0612345678toooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "man", "test@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "France", "0612345678toooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "man", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -312,7 +324,7 @@ class UserE2ETest {
     @Test
     void testCreateUserGenderTooLong() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "France", "0612345678", "gendertoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "test@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "France", "0612345678", "gendertoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong", "test@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -327,7 +339,7 @@ class UserE2ETest {
     @Test
     void testCreateUserMailTooLong() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "France", "0612345678", "man", "testtoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong@test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "France", "0612345678", "man", "testtoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooolong@test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))
@@ -342,7 +354,7 @@ class UserE2ETest {
     @Test
     void testCreateUserMailWrongFormat() throws Exception {
     	
-    	UserDTO user = new UserDTO("testcreation", date, "France", "0612345678", "man", "test.com");
+    	UserDTO user = new UserDTO("testcreation", dateDTO, "France", "0612345678", "man", "test.com");
 
     	mockMvc.perform(post("/user")
 	    		.content(objectMapper.writeValueAsString(user))

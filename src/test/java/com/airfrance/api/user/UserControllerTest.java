@@ -34,9 +34,10 @@ class UserControllerTest {
 	@InjectMocks
     private UserController userController = new UserControllerImpl();
 	
-	private Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+	private Date date = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 	private User user = new User(1L, "test", date, "France", "0612345678", "man", "test@test.com");
-	private UserDTO userDTO = new UserDTO("test", date, "France", "0612345678", "man", "test@test.com");
+	private LocalDate dateDTO = LocalDate.of(2002, 1, 8);
+	private UserDTO userDTO = new UserDTO("test", dateDTO, "France", "0612345678", "man", "test@test.com");
 	
 	@Test
     void testGetUser() throws Exception {
@@ -49,7 +50,7 @@ class UserControllerTest {
 		verify(userService).getUser("test");
 		assertNotNull(result);
 		assertEquals("test", result.getUsername());
-		assertEquals(date, result.getBirthdate());
+		assertEquals(dateDTO, result.getBirthdate());
 		assertEquals("France", result.getCountry());
 		assertEquals("0612345678", result.getPhone());
 		assertEquals("man", result.getGender());
@@ -68,7 +69,7 @@ class UserControllerTest {
 		verify(userService).createUser(user);
 		assertNotNull(result);
 		assertEquals("test", result.getUsername());
-		assertEquals(date, result.getBirthdate());
+		assertEquals(dateDTO, result.getBirthdate());
 		assertEquals("France", result.getCountry());
 		assertEquals("0612345678", result.getPhone());
 		assertEquals("man", result.getGender());

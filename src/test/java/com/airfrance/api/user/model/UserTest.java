@@ -19,7 +19,7 @@ class UserTest {
 	@Test
     void testUser() throws Exception {
 		
-		Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+		Date date = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 
 		User user1 = new User();
 		user1.setId(1L);
