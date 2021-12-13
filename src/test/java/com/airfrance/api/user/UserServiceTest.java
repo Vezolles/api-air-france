@@ -3,10 +3,12 @@ package com.airfrance.api.user;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -31,17 +33,23 @@ import com.airfrance.api.user.model.User;
 class UserServiceTest {
 	
 	@Mock
+	private Clock clock;
+	
+	@Mock
 	private UserRepository userRepository;
 	
 	@InjectMocks
     private UserService userService = new UserServiceImpl();
 	
-	private Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+	private Date date = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 	private User user = new User(1L, "test", date, "France", "0612345678", "man", "test@test.com");
 		
 	@BeforeEach
 	void setUp() {
 		
+		Clock fixedClock = Clock.fixed(LocalDate.of(2020, 1, 8).atStartOfDay(ZoneOffset.UTC).toInstant(), ZoneOffset.UTC);
+	    doReturn(fixedClock.instant()).when(clock).instant();
+	    doReturn(fixedClock.getZone()).when(clock).getZone();
 		when(userRepository.findByUsername("test")).thenReturn(Optional.of(user));
 	}
 	
@@ -123,7 +131,7 @@ class UserServiceTest {
 	@Test
     void testCreateUserNotAdult() throws Exception {
 		
-		Date dateNotAdult = Date.from(LocalDate.of(2020, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+		Date dateNotAdult = Date.from(LocalDate.of(2002, 1, 9).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 		User userNotAdult = new User(4L, "testnotadult", dateNotAdult, "France", "0612345678", "man", "test@test.com");
 		
 		try {
@@ -138,7 +146,7 @@ class UserServiceTest {
 	@Test
     void testCreateUserNotFrench() throws Exception {
 		
-		Date dateNotFrench = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+		Date dateNotFrench = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 		User userNotFrench = new User(5L, "testnotadult", dateNotFrench, "Spain", "0612345678", "man", "test@test.com");
 		
 		try {

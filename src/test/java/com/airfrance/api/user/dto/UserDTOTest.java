@@ -3,8 +3,6 @@ package com.airfrance.api.user.dto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalDate;
-import java.time.ZoneOffset;
-import java.util.Date;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +17,7 @@ class UserDTOTest {
 	@Test
     void testUserDTO() throws Exception {
 		
-		Date date = Date.from(LocalDate.of(1990, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
+		LocalDate date = LocalDate.of(2002, 1, 8);
 
 		UserDTO user1 = new UserDTO();
 		user1.setUsername("test");

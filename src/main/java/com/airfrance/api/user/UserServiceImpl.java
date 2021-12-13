@@ -1,7 +1,8 @@
 package com.airfrance.api.user;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -24,6 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
+	
+	/**
+	 * Clock used for LocalDateTime
+	 */
+	@Autowired
+    private Clock clock;
 	
 	/**
 	 * UserRepository used to persist user
@@ -61,8 +68,8 @@ public class UserServiceImpl implements UserService {
 		log.info("create user {}", user.getUsername());
 		
 		// Convert dates to local date time
-		LocalDateTime now = LocalDateTime.now();
-	    LocalDateTime birthdate = user.getBirthdate().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		LocalDateTime now = LocalDateTime.now(clock);
+	    LocalDateTime birthdate = user.getBirthdate().toInstant().atZone(ZoneOffset.UTC).toLocalDateTime();
 
 	    // If user is not adult French, throw error user cannot be created, user must be adult French
 	    if (ChronoUnit.YEARS.between(birthdate, now) < 18 || !Constants.FRANCE.equalsIgnoreCase(user.getCountry())) {

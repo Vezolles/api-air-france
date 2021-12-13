@@ -1,4 +1,4 @@
-http://localhost:8080/swagger-ui.html# api-air-france
+# api-air-france
 
 Ce projet est développé avec:
 - OpenJDK 16.0.1 (https://jdk.java.net)
