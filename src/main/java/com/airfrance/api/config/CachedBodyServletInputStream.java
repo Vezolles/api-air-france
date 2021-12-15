@@ -19,6 +19,10 @@ public class CachedBodyServletInputStream extends ServletInputStream {
 	
 	private InputStream cachedBodyInputStream;
 
+	/**
+	 * Default constructor for CachedBodyServletInputStream
+	 * @param cachedBody cached body to use
+	 */
     public CachedBodyServletInputStream(byte[] cachedBody) {
         this.cachedBodyInputStream = new ByteArrayInputStream(cachedBody);
     }

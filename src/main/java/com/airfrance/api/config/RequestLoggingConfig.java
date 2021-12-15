@@ -38,7 +38,7 @@ public class RequestLoggingConfig {
 	/**
 	 *  Log GET incoming request
 	 * 
-	 * @param joinPoint 
+	 * @param joinPoint join point used with aspect
 	 * @return result of method execution
 	 * @throws Throwable if an error occurs
 	 */
@@ -67,7 +67,7 @@ public class RequestLoggingConfig {
 	/**
 	 *  Log POST incoming request
 	 * 
-	 * @param joinPoint 
+	 * @param joinPoint join point used with aspect
 	 * @return result of method execution
 	 * @throws Throwable if an error occurs
 	 */
@@ -97,7 +97,7 @@ public class RequestLoggingConfig {
 	/**
 	 *  Log DELETE incoming request
 	 * 
-	 * @param joinPoint 
+	 * @param joinPoint join point used with aspect
 	 * @return result of method execution
 	 * @throws Throwable if an error occurs
 	 */

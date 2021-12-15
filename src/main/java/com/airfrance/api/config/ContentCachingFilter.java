@@ -30,9 +30,9 @@ public class ContentCachingFilter extends OncePerRequestFilter {
 	 * <p>Provides HttpServletRequest and HttpServletResponse arguments instead of the
 	 * default ServletRequest and ServletResponse ones.
 	 * 
-	 * @param request The request to process
-     * @param response The response associated with the request
-     * @param chain Provides access to the next filter in the chain for this filter 
+	 * @param httpServletRequest The request to process
+     * @param httpServletResponse The response associated with the request
+     * @param filterChain Provides access to the next filter in the chain for this filter 
      * 				to pass the request and response to for further processing
      * @throws IOException if an I/O error occurs during this filter's processing of the request
      * @throws ServletException if the processing fails for any other reason

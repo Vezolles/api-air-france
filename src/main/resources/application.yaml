@@ -44,6 +44,7 @@ springdoc:
 airfrance:
   api:
     user:
+      get-all: "/user"
       get: "/user/{username}"
       create: "/user"
       delete: "/user/{username}"

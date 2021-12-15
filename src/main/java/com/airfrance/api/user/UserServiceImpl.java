@@ -4,9 +4,12 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.airfrance.api.user.exception.UserCreateException;
@@ -34,6 +37,26 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Autowired
     private UserRepository userRepository;
+	
+	/**
+	 * Service to get all user's details
+	 * @return list of user's information
+	 */
+	@Override
+	public List<User> getUsers(Integer page, Integer size) {
+		
+		// Creating page search
+		if (size != null) {
+			Pageable pageable = PageRequest.of(page != null ? page : 0, size);
+			
+			// Find all users for page
+			return userRepository.findAll(pageable).toList();
+		
+		} else {
+			// Find all users
+			return userRepository.findAll();
+		}
+	}
 
 	/**
 	 * Service to get user's details

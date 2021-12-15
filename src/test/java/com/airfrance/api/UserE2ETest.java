@@ -1,5 +1,7 @@
 package com.airfrance.api;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.doReturn;
@@ -12,11 +14,14 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +33,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.airfrance.api.user.UserRepository;
 import com.airfrance.api.user.dto.UserDTO;
 import com.airfrance.api.user.model.User;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -68,6 +74,24 @@ class UserE2ETest {
 		user.setEmail("test@test.com");
 		userRepository.save(user);
 		
+		User user2 = new User();
+    	user2.setUsername("test2");
+    	user2.setBirthdate(date);
+    	user2.setCountry("France");
+    	user2.setPhone("0612345678");
+    	user2.setGender("man");
+    	user2.setEmail("test@test.com");
+		userRepository.save(user2);
+		
+		User user3 = new User();
+		user3.setUsername("test3");
+		user3.setBirthdate(date);
+		user3.setCountry("France");
+		user3.setPhone("0612345678");
+		user3.setGender("man");
+		user3.setEmail("test@test.com");
+		userRepository.save(user3);
+		
 		Clock fixedClock = Clock.fixed(LocalDate.of(2020, 1, 8).atStartOfDay(ZoneOffset.UTC).toInstant(), ZoneOffset.UTC);
 	    doReturn(fixedClock.instant()).when(clock).instant();
 	    doReturn(fixedClock.getZone()).when(clock).getZone();
@@ -82,7 +106,53 @@ class UserE2ETest {
 		if (user.isPresent()) {
 			userRepository.delete(user.get());
 		}
+		Optional<User> user2 = userRepository.findByUsername("test2");
+		if (user2.isPresent()) {
+			userRepository.delete(user2.get());
+		}
+		Optional<User> user3 = userRepository.findByUsername("test3");
+		if (user3.isPresent()) {
+			userRepository.delete(user3.get());
+		}
 	}
+	
+	/**
+	 * Test get all user's details
+	 * @throws Exception if error occurs
+	 */
+	@Test
+    void testGetAllUsers() throws Exception {
+
+    	MvcResult result = mockMvc.perform(get("/user"))
+        	.andExpect(status().isOk())
+        	.andReturn();
+    	
+    	List<UserDTO> usersDTOReceived = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<UserDTO>>(){});
+    	
+    	assertNotNull(usersDTOReceived);
+		assertThat(usersDTOReceived.size(), is(3));
+    }
+	
+	/**
+	 * Test get all user's details with page and size
+	 * @throws Exception if error occurs
+	 */
+	@ParameterizedTest
+	@CsvSource({
+        "0, 2, 2",
+        "1, 2, 1"
+    })
+    void testGetAllUsersWithPageAndSize(Integer page, Integer size, int resultSize) throws Exception {
+
+    	MvcResult result = mockMvc.perform(get("/user?page=" + page + "&size=" + size))
+        	.andExpect(status().isOk())
+        	.andReturn();
+    	
+    	List<UserDTO> usersDTOReceived = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<UserDTO>>(){});
+    	
+    	assertNotNull(usersDTOReceived);
+		assertThat(usersDTOReceived.size(), is(resultSize));
+    }
 
 	/**
 	 * Test get user's details
@@ -104,17 +174,6 @@ class UserE2ETest {
     	assertEquals("0612345678", userDTOReceived.getPhone());
     	assertEquals("man", userDTOReceived.getGender());
     	assertEquals("test@test.com", userDTOReceived.getEmail());
-    }
-    
-    /**
-	 * Test fail if user is blank
-	 * @throws Exception if error occurs
-	 */
-    @Test
-    void testGetUserBlank() throws Exception {
-
-    	mockMvc.perform(get("/user/"))
-        	.andExpect(status().isMethodNotAllowed());
     }
     
     /**

@@ -27,7 +27,7 @@ public class CachedBodyHttpServletRequest extends HttpServletRequestWrapper {
 	 * Default constructor for CachedBodyHttpServletRequest
 	 * 
 	 * @param request the HttpServletRequest to set in cache
-	 * @throws IOException
+	 * @throws IOException it an error occurs
 	 */
     public CachedBodyHttpServletRequest(HttpServletRequest request) throws IOException {
         super(request);

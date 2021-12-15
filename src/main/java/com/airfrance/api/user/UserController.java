@@ -1,11 +1,14 @@
 package com.airfrance.api.user;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.airfrance.api.user.dto.UserDTO;
@@ -17,6 +20,14 @@ import com.airfrance.api.user.dto.UserDTO;
  */
 @Validated
 public interface UserController {
+	
+	/**
+	 * Api to get all user's details
+	 * @param page page number search
+	 * @param size size number of element search
+	 * @return list of ser'information
+	 */
+	@ResponseBody List<UserDTO> getUsers(@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size);
 	
 	/**
 	 * Api to get user's details
