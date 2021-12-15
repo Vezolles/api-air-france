@@ -1,5 +1,8 @@
 package com.airfrance.api.user;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -12,6 +15,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.airfrance.api.user.exception.UserCreateException;
 import com.airfrance.api.user.exception.UserDeleteException;
@@ -43,6 +50,8 @@ class UserServiceTest {
 	
 	private Date date = Date.from(LocalDate.of(2002, 1, 8).atStartOfDay().atZone(ZoneOffset.UTC).toInstant());
 	private User user = new User(1L, "test", date, "France", "0612345678", "man", "test@test.com");
+	private User user2 = new User(2L, "test2", date, "France", "0612345678", "man", "test@test.com");
+	private User user3 = new User(3L, "test3", date, "France", "0612345678", "man", "test@test.com");
 		
 	@BeforeEach
 	void setUp() {
@@ -52,6 +61,47 @@ class UserServiceTest {
 	    doReturn(fixedClock.getZone()).when(clock).getZone();
 		when(userRepository.findByUsername("test")).thenReturn(Optional.of(user));
 	}
+	
+	@Test
+    void testGetAllUser() throws Exception {
+		
+		Page<User> users = new PageImpl<>(List.of(user, user2, user3));
+		when(userRepository.findAll(PageRequest.of(1, 3))).thenReturn(users);
+		
+		List<User> result = userService.getUsers(1, 3);
+		
+		verify(userRepository).findAll(PageRequest.of(1, 3));
+		assertNotNull(result);
+		assertThat(result.size(), is(3));
+		assertThat(result, contains(user, user2, user3));
+    }
+	
+	@Test
+    void testGetAllUserNoPage() throws Exception {
+		
+		Page<User> users = new PageImpl<>(List.of(user, user2, user3));
+		when(userRepository.findAll(PageRequest.of(0, 3))).thenReturn(users);
+		
+		List<User> result = userService.getUsers(null, 3);
+		
+		verify(userRepository).findAll(PageRequest.of(0, 3));
+		assertNotNull(result);
+		assertThat(result.size(), is(3));
+		assertThat(result, contains(user, user2, user3));
+    }
+	
+	@Test
+    void testGetAllUserNoPageNoSize() throws Exception {
+		
+		when(userRepository.findAll()).thenReturn(List.of(user, user2, user3));
+		
+		List<User> result = userService.getUsers(null, null);
+		
+		verify(userRepository).findAll();
+		assertNotNull(result);
+		assertThat(result.size(), is(3));
+		assertThat(result, contains(user, user2, user3));
+    }
 	
 	@Test
     void testGetUser() throws Exception {

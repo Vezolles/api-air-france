@@ -6,6 +6,36 @@
 	},
 	"item": [
 		{
+			"name": "Get all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/user?page=0&size=3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"user"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0",
+							"description": "Page number"
+						},
+						{
+							"key": "size",
+							"value": "3",
+							"description": "Size of page"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get user",
 			"request": {
 				"method": "GET",

@@ -1,6 +1,9 @@
 package com.airfrance.api.user;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +16,7 @@ import com.airfrance.api.user.dto.UserDTO;
 import com.airfrance.api.user.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,11 +43,33 @@ public class UserControllerImpl implements UserController {
 	 */
 	@Autowired
     private UserService userService;
+	
+	/**
+	 * Api to get all user's details
+	 * @return all users informations and status HTTP 200
+	 */
+	@Operation(summary = "Get all user's details")
+	@ApiResponses(value = { 
+		@ApiResponse(responseCode = "200", description = "Users found", 
+			content = { @Content(mediaType = "application/json", 
+			array = @ArraySchema(schema = @Schema(implementation = UserDTO.class))) }) })
+	@Override
+	@GetMapping(value="${airfrance.api.user.get-all}")
+	@ResponseStatus(HttpStatus.OK)
+	public List<UserDTO> getUsers(Integer page, Integer size) {
+		
+		// Call service to get user
+		List<User> usersFound = userService.getUsers(page, size);
+				
+		// Return all user as DTO
+		return modelMapper.map(usersFound, new TypeToken<List<UserDTO>>(){}.getType());
+	}
+
 
 	/**
 	 * Api to get user's details
 	 * @param username the username to get detail
-	 * @return user'information and status HTTP 200
+	 * @return user's information and status HTTP 200
 	 */
 	@Operation(summary = "Get user details by username")
 	@ApiResponses(value = { 
@@ -68,7 +94,7 @@ public class UserControllerImpl implements UserController {
 	/**
 	 * Api to create user
 	 * @param user the user's details to create
-	 * @return user'information for user created and status HTTP 201
+	 * @return user's information for user created and status HTTP 201
 	 */
 	@Operation(summary = "Create new user with details")
 	@ApiResponses(value = { 
@@ -111,5 +137,5 @@ public class UserControllerImpl implements UserController {
 		// Call service to delete user
 		userService.deleteUser(username);
 	}
-
+	
 }

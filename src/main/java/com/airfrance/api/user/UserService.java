@@ -1,5 +1,7 @@
 package com.airfrance.api.user;
 
+import java.util.List;
+
 import com.airfrance.api.user.exception.UserCreateException;
 import com.airfrance.api.user.exception.UserDeleteException;
 import com.airfrance.api.user.exception.UserNotFoundException;
@@ -11,6 +13,14 @@ import com.airfrance.api.user.model.User;
  * @author Vezolles
  */
 public interface UserService {
+	
+	/**
+	 * Service to get all user's details
+	 * @param page page number search
+	 * @param size size number of element search
+	 * @return list of user's information
+	 */
+	List<User> getUsers(Integer page, Integer size);
 	
 	/**
 	 * Service to get user's details
