@@ -15,15 +15,12 @@ import com.airfrance.api.user.exception.UserNotFoundException;
 import com.airfrance.api.user.model.User;
 import com.airfrance.api.util.Constants;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * User service implementation
  * Service implementation for users, make processing
  * @author Vezolles
  */
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
 	
 	/**
@@ -47,9 +44,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUser(String username) throws UserNotFoundException {
 		
-		// Log start method
-		log.info("get user {}", username);
-		
 		// Find user if exist, else throw error user not found
 		return userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -63,9 +57,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public User createUser(User user) throws UserCreateException {
-		
-		// Log start method
-		log.info("create user {}", user.getUsername());
 		
 		// Convert dates to local date time
 		LocalDateTime now = LocalDateTime.now(clock);
@@ -103,9 +94,6 @@ public class UserServiceImpl implements UserService {
 	 */
 	@Override
 	public void deleteUser(String username) throws UserDeleteException {
-		
-		// Log start method
-		log.info("delete user {}", username);
 
 		// Find user if exist, else throw error user does not exist
 		User userFound = userRepository.findByUsername(username)
