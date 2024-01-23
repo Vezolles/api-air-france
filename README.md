@@ -1,15 +1,15 @@
 # api-air-france
 
 Ce projet est développé avec:
-- OpenJDK 16.0.1 (https://jdk.java.net)
-- Spring Boot 2.6.1 (https://spring.io/projects/spring-boot)
-- Maven 3.8.4 (https://maven.apache.org)
+- OpenJDK 17 (https://jdk.java.net)
+- Spring Boot 2.7.18 (https://spring.io/projects/spring-boot)
+- Maven 3.9.6 (https://maven.apache.org)
 
 ## Pré-requis
 
-Il est nécessaire d'installer OpenJDK 16.0.1 sur votre poste et de définir les variables d'environnement `JAVA_HOME`.
+Il est nécessaire d'installer OpenJDK sur votre poste et de définir les variables d'environnement `JAVA_HOME`.
 
-Cette variable doit pointer vers votre installation locale OpenJDK 16.0.1.
+Cette variable doit pointer vers votre installation locale d'OpenJDK.
 
 Il est nécessaire d'ajouter à votre variable d'environnement Path une entrée vers `%JAVA_HOME\bin`.
 
